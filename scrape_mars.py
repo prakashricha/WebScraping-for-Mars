@@ -73,22 +73,42 @@ def scrape_info():
     # # JPL Mars Space Images - Featured Image
 
 
-    jpl_fullsize_url = 'https://photojournal.jpl.nasa.gov/jpeg/'
-    jpl_url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
-    browser.visit(jpl_url)
-    time.sleep(5)
-    jpl_html = browser.html
-    jpl_soup = BeautifulSoup(jpl_html, 'html.parser')
-    time.sleep(5)
-    featured_image_list=[]
-    for image in jpl_soup.find_all('div',class_="img"):
-        featured_image_list.append(image.find('img').get('src'))
+    # jpl_fullsize_url = 'https://photojournal.jpl.nasa.gov/jpeg/'
+    # jpl_url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
+    # browser.visit(jpl_url)
+    # time.sleep(5)
+    # jpl_html = browser.html
+    # jpl_soup = BeautifulSoup(jpl_html, 'html.parser')
+    # time.sleep(5)
+    # featured_image_list=[]
+    # for image in jpl_soup.find_all('div',class_="img"):
+    #     featured_image_list.append(image.find('img').get('src'))
 
-    feature_image = featured_image_list[0]
-    temp_list_1 = feature_image.split('-')
-    temp_list_2 = temp_list_1[0].split('/')
-    featured_image_url = jpl_fullsize_url + temp_list_2[-1] + '.jpg'
-            
+    # feature_image = featured_image_list[0]
+    # temp_list_1 = feature_image.split('-')
+    # temp_list_2 = temp_list_1[0].split('/')
+    # featured_image_url = jpl_fullsize_url + temp_list_2[-1] + '.jpg'
+
+    url="https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
+    #response = requests.get(url)
+    browser=Browser("chrome")
+    browser.visit(url)
+    time.sleep(5)
+    click_image=browser.find_by_id("full_image")
+    click_image.click()
+    time.sleep(5)
+    print(click_image)
+    links_found1 = browser.find_link_by_partial_text('more info')
+    print(links_found1)
+    links_found1.click()
+    time.sleep(5)
+
+    soup = BeautifulSoup(browser.html, 'html.parser')
+    result=soup.find('figure',class_="lede")
+    featured_image_url="https://www.jpl.nasa.gov"+result.a.img["src"]
+    featured_image_url
+    mars["featured_image"]=featured_image_url
+    mars["featured_image"]        
     # # Mars Weather
 
     twitterurl="https://twitter.com/marswxreport?lang=en"
